@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { byNewest, formatDate, isPublished } from "../utils/content";
+
+const posts = (await getCollection("posts", isPublished)).sort(byNewest).slice(0, 3);
+const notes = (await getCollection("notes", isPublished)).sort(byNewest).slice(0, 4);
+const projects = (await getCollection("projects", isPublished)).sort(byNewest).slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="intro-section">
+    <div>
+      <p class="eyebrow">个人知识网站</p>
+      <h1>正式文章和持续更新的个人笔记。</h1>
+      <p class="intro-copy">
+        这里用于整理文章、笔记和项目记录。文章更完整，笔记更开放，项目记录偏向过程和结果。
+      </p>
+      <div class="action-row">
+        <a class="button primary" href="/posts/">阅读文章</a>
+        <a class="button" href="/notes/">查看笔记</a>
+      </div>
+    </div>
+    <aside class="status-panel" aria-label="网站内容概览">
+      <div>
+        <strong>{posts.length}</strong>
+        <span>近期文章</span>
+      </div>
+      <div>
+        <strong>{notes.length}</strong>
+        <span>近期笔记</span>
+      </div>
+      <div>
+        <strong>{projects.length}</strong>
+        <span>项目记录</span>
+      </div>
+    </aside>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Posts</p>
+        <h2>正式文章</h2>
+      </div>
+      <a href="/posts/">全部文章</a>
+    </div>
+    <div class="card-grid">
+      {
+        posts.map((post) => (
+          <a class="content-card" href={`/posts/${post.id}/`}>
+            <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+            <h3>{post.data.title}</h3>
+            <p>{post.data.description}</p>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Notes</p>
+        <h2>个人笔记</h2>
+      </div>
+      <a href="/notes/">全部笔记</a>
+    </div>
+    <div class="list-panel">
+      {
+        notes.map((note) => (
+          <a class="list-row" href={`/notes/${note.id}/`}>
+            <span>
+              <strong>{note.data.title}</strong>
+              <small>{note.data.description}</small>
+            </span>
+            <time datetime={note.data.pubDate.toISOString()}>{formatDate(note.data.pubDate)}</time>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

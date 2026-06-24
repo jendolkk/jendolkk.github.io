@@ -1,0 +1,20 @@
+---
+import { getCollection, render } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+import { isPublished } from "../../utils/content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", isPublished);
+  return posts.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ArticleLayout entry={entry} collectionLabel="文章">
+  <Content />
+</ArticleLayout>

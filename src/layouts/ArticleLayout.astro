@@ -1,0 +1,38 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { formatDate } from "../utils/content";
+
+const { entry, collectionLabel } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = entry.data;
+---
+
+<BaseLayout title={`${title} | Jendolkk`} description={description}>
+  <article class="article">
+    <a class="back-link" href={`/${entry.collection}/`}>← 返回{collectionLabel}</a>
+    <header class="article-header">
+      <p class="eyebrow">{collectionLabel}</p>
+      <h1>{title}</h1>
+      {
+        description && <p class="article-description">{description}</p>
+      }
+      <div class="meta-row">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {
+          updatedDate && (
+            <span>更新于 {formatDate(updatedDate)}</span>
+          )
+        }
+      </div>
+      {
+        tags.length > 0 && (
+          <div class="tag-list" aria-label="标签">
+            {tags.map((tag) => <span>{tag}</span>)}
+          </div>
+        )
+      }
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

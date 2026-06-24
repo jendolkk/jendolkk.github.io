@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { byNewest, formatDate, isPublished } from "../../utils/content";
+
+const posts = (await getCollection("posts", isPublished)).sort(byNewest);
+---
+
+<BaseLayout title="文章 | Jendolkk" description="Hello World">
+  <section class="page-heading">
+    <p class="eyebrow">Posts</p>
+    <h1>文章</h1>
+    <p>Hello World</p>
+  </section>
+  <div class="card-grid">
+    {
+      posts.map((post) => (
+        <a class="content-card" href={`/posts/${post.id}/`}>
+          <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+          <div class="tag-list">
+            {post.data.tags.map((tag) => <span>{tag}</span>)}
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

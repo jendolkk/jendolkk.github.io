@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { byNewest, formatDate, isPublished } from "../../utils/content";
+
+const projects = (await getCollection("projects", isPublished)).sort(byNewest);
+---
+
+<BaseLayout title="项目 | Jendolkk" description="项目记录和作品整理。">
+  <section class="page-heading">
+    <p class="eyebrow">Projects</p>
+    <h1>项目</h1>
+    <p>记录做过的工具、模板、应用和长期维护的内容。</p>
+  </section>
+  <div class="card-grid">
+    {
+      projects.map((project) => (
+        <a class="content-card" href={`/projects/${project.id}/`}>
+          <time datetime={project.data.pubDate.toISOString()}>{formatDate(project.data.pubDate)}</time>
+          <h2>{project.data.title}</h2>
+          <p>{project.data.description}</p>
+          <div class="tag-list">
+            {project.data.tags.map((tag) => <span>{tag}</span>)}
+          </div>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

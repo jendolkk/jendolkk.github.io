@@ -1,0 +1,28 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { byNewest, formatDate, isPublished } from "../../utils/content";
+
+const notes = (await getCollection("notes", isPublished)).sort(byNewest);
+---
+
+<BaseLayout title="笔记 | Jendolkk" description="持续更新的个人笔记。">
+  <section class="page-heading">
+    <p class="eyebrow">Notes</p>
+    <h1>笔记</h1>
+    <p>适合放正在推进的问题、阅读记录、临时想法和未完全定稿的材料。</p>
+  </section>
+  <div class="list-panel">
+    {
+      notes.map((note) => (
+        <a class="list-row" href={`/notes/${note.id}/`}>
+          <span>
+            <strong>{note.data.title}</strong>
+            <small>{note.data.description}</small>
+          </span>
+          <time datetime={note.data.pubDate.toISOString()}>{formatDate(note.data.pubDate)}</time>
+        </a>
+      ))
+    }
+  </div>
+</BaseLayout>

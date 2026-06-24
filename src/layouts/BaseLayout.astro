@@ -1,0 +1,55 @@
+---
+import "../styles/global.css";
+
+const {
+  title = "Jendolkk 的个人知识网站",
+  description = "正式文章、个人笔记和项目记录。",
+} = Astro.props;
+
+const navItems = [
+  { href: "/", label: "首页" },
+  { href: "/posts/", label: "文章" },
+  { href: "/notes/", label: "笔记" },
+  { href: "/projects/", label: "项目" },
+  { href: "/about/", label: "关于" },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="/">Jendolkk</a>
+      <nav class="site-nav" aria-label="主导航">
+        {
+          navItems.map((item) => {
+            const current =
+              item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            return (
+              <a href={item.href} aria-current={current ? "page" : undefined}>
+                {item.label}
+              </a>
+            );
+          })
+        }
+      </nav>
+    </header>
+    <main class="site-main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <span>© {new Date().getFullYear()} Jendolkk</span>
+      <span>Built with Astro, Markdown/MDX, and GitHub Pages.</span>
+    </footer>
+  </body>
+</html>
